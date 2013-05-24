@@ -1,5 +1,6 @@
 * Update README and use markdown.
 * Change to 2-space indent.
+* Prefix puppet variables with @ in the template.
 
 2012-04-03 - 0.1.3
 * Start cleaning up the module to match current puppetlabs guidelines.
