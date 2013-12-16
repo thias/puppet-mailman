@@ -27,8 +27,11 @@ class mailman (
   $default_url_pattern = 'http://%s/mailman/',
   $mailman_site_list   = 'mailman',
   $add_virtualhost     = {},
-  $mm_cfg_settings     = {}
-) {
+  $mm_cfg_settings     = {},
+  $mm_cfg_path         = $::mailman::params::cfg_path,
+  $mm_user             = $::mailman::params::user,
+  $mm_group            = $::mailman::params::group,
+) inherits mailman::params {
 
   # Main package and service it provides
   package { 'mailman': ensure => installed }
@@ -40,10 +43,10 @@ class mailman (
   }
 
   # Main Mailman configuration file (well, python script)
-  file { '/usr/lib/mailman/Mailman/mm_cfg.py':
+  file { $mm_cfg_path :
     content => template('mailman/mm_cfg.py.erb'),
     owner   => 'root',
-    group   => 'mailman',
+    group   => $mm_group,
     mode    => '0640',
     notify  => Service['mailman'],
   }
@@ -52,7 +55,7 @@ class mailman (
   # The password is immediately changed, and appears in the puppet logs,
   # so make sure unprivileged users can't read them, or change it again.
   exec { 'create_mailman_site_list':
-    require   => File['/usr/lib/mailman/Mailman/mm_cfg.py'],
+    require   => File[$mm_cfg_path],
     command   => "/usr/lib/mailman/bin/newlist -q ${mailman_site_list} ${mailman_site_list}@${default_email_host} ${uniqueid} && /usr/lib/mailman/bin/change_pw -l ${mailman_site_list}",
     creates   => "/var/lib/mailman/lists/${mailman_site_list}/config.pck",
     logoutput => true,
