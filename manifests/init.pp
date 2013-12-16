@@ -31,6 +31,7 @@ class mailman (
   $mm_cfg_path         = $::mailman::params::cfg_path,
   $mm_user             = $::mailman::params::user,
   $mm_group            = $::mailman::params::group,
+  $mmctl_hasstatus     = $::mailman::params::hasstatus,
 ) inherits mailman::params {
 
   # Main package and service it provides
@@ -39,7 +40,7 @@ class mailman (
     require   => Exec['create_mailman_site_list'],
     enable    => true,
     ensure    => running,
-    hasstatus => true,
+    hasstatus => $mmctl_hasstatus,
   }
 
   # Main Mailman configuration file (well, python script)
