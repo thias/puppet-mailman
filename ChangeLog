@@ -1,3 +1,5 @@
+* Add support for Debian/Ubuntu (Daniel Lorch).
+
 2013-05-24 - 0.1.4
 * Update README and use markdown.
 * Change to 2-space indent.
